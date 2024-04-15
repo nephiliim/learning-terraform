@@ -92,10 +92,6 @@ module "alb" {
     }
   }
 
-  
-    }
-  }
-
   tags = {
     Environment = "dev"
   }
