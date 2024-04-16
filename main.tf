@@ -15,7 +15,7 @@ data "aws_ami" "app_ami" {
 }
 
  "aws_vpc" "default" {
-  default = true
+  data default = true
 }
 
 module "blog_vpc" {
@@ -71,7 +71,7 @@ module "blog_alb" {
       to_port     = var.environment.network_prefix}
       ip_protocol = "tcp"
       description = "HTTP web traffic"
-      cidr_ipv4   = var.environment.network_prefix}"
+      cidr_ipv4   = var.environment.network_prefix"
     }
     all_https = {
       from_port   = 443
