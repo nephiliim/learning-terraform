@@ -63,18 +63,18 @@ module "blog_alb" {
   # Security Group
   security_group_ingress_rules = {
     all_http = {
-      from_port   = var.environment.network_prefix}
-      to_port     = var.environment.network_prefix}
+      from_port   = "${var.environment.network_prefix}"
+      to_port     = "${var.environment.network_prefix}"
       ip_protocol = "tcp"
       description = "HTTP web traffic"
-      cidr_ipv4   = var.environment.network_prefix"
+      cidr_ipv4   = "${var.environment.network_prefix}"
     }
     all_https = {
       from_port   = 443
       to_port     = 443
       ip_protocol = "tcp"
       description = "HTTPS web traffic"
-      cidr_ipv4   = var.environment.network_prefix}"
+      cidr_ipv4   = "${var.environment.network_prefix}"
     }
   }
   security_group_egress_rules = {
@@ -98,10 +98,8 @@ module "blog_alb" {
     }
   }
 
-  tags = {
-    Environment = var.environment.name
-  }
-}
+  
+
 
 module "Blog_sg" {
   source  = "terraform-aws-modules/security-group/aws"
@@ -110,10 +108,10 @@ module "Blog_sg" {
  
   vpc_id              = module.blog_vpc.vpc_id
   ingress_rules       = ["http-var.environment.network_prefix}-tcp","https-443-tcp"]
-  ingress_cidr_blocks = [var.environment.network_prefix}"]
+  ingress_cidr_blocks = ["var.environment.network_prefix}"]
   egress_rules        = ["all-all"]
-  egress_cidr_blocks  = [var.environment.network_prefix}"]
-}
+  egress_cidr_blocks  = "${var.environment.network_prefix}"
 
+}
 
 
