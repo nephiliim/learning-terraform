@@ -3,7 +3,7 @@ data "aws_ami" "app_ami" {
 
   filter {
     name   = "name"
-    values = ["bitnami-tomcat-*-x86_64-hvm-ebs-nami"]
+    values = [var.ami_filer.name]
   }
 
   filter {
@@ -11,7 +11,7 @@ data "aws_ami" "app_ami" {
     values = ["hvm"]
   }
 
-  owners = ["979382823631"] # Bitnami
+  owners = [var.ami_filer.owner] # 
 }
 
 data "aws_vpc" "default" {
@@ -21,16 +21,17 @@ data "aws_vpc" "default" {
 module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "dev"
-  cidr = "10.0.0.0/16"
+  name = var.environment.name
+  cidr = "${var.environment.network_prefix}var.environment.network_prefix}/16"
 
   azs             = ["us-west-2a", "us-west-2b", "us-west-2c"]
 
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  public_subnets  = ["{var.environment.network_prefix}].101.0/24",["{var.environment.network_prefix}].102.0/24",["{var.environment.network_prefix}].103.0/24",
 
+enable_nat_gateway = true
   tags = {
     Terraform = "true"
-    Environment = "dev"
+    Environment = var.environment.name
   }
 }
 
@@ -41,9 +42,9 @@ module "autoscaling" {
   version = "7.4.1"
   # insert the 1 required variable here
 
-  name = "blog"
-  min_size = 1
-  max_size = 2
+  name = "${var.environment.name}-blog"
+  min_size = var.asg_min_size
+  max_size = var.asg_max_size
 
   vpc_zone_identifier = module.blog_vpc.public_subnets
   
@@ -59,63 +60,63 @@ module "autoscaling" {
 module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
 
-  name    = "blog-alb"
+  name    = "${var.environment.name}-blog-alb"
   vpc_id  = "module.blog_vpc.vpc_id"
   subnets =  module.blog_vpc.public_subnets
 
   # Security Group
   security_group_ingress_rules = {
     all_http = {
-      from_port   = 80
-      to_port     = 80
+      from_port   = var.environment.network_prefix}
+      to_port     = var.environment.network_prefix}
       ip_protocol = "tcp"
       description = "HTTP web traffic"
-      cidr_ipv4   = "0.0.0.0/0"
+      cidr_ipv4   = var.environment.network_prefix}"
     }
     all_https = {
       from_port   = 443
       to_port     = 443
       ip_protocol = "tcp"
       description = "HTTPS web traffic"
-      cidr_ipv4   = "0.0.0.0/0"
+      cidr_ipv4   = var.environment.network_prefix}"
     }
   }
   security_group_egress_rules = {
     all = {
       ip_protocol = "-1"
-      cidr_ipv4   = "10.0.0.0/16"
+      cidr_ipv4   = "var.environment.network_prefix}/16"
     }
   }
 
 
   listeners = {
     ex-http-https-redirect = {
-      port     = 80
+      port     = var.environment.network_prefix}
       protocol = "HTTP"
       redirect = {
         port        = "443"
         protocol    = "HTTPS"
-        status_code = "HTTP_301"
+        status_code = "HTTP_var.environment.network_prefix}1"
       }
     
     }
   }
 
   tags = {
-    Environment = "dev"
+    Environment = var.environment.name
   }
 }
 
 module "Blog_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.2"
-  name = "blog"
+  name = "${var.environment.name}-blog"
  
-vpc_id              = module.blog_vpc.vpc_id
-ingress_rules       = ["http-80-tcp","https-443-tcp"]
-ingress_cidr_blocks = ["0.0.0.0/0"]
-egress_rules       = ["all-all"]
-egress_cidr_blocks = ["0.0.0.0/0"]
+  vpc_id              = module.blog_vpc.vpc_id
+  ingress_rules       = ["http-var.environment.network_prefix}-tcp","https-443-tcp"]
+  ingress_cidr_blocks = [var.environment.network_prefix}"]
+  egress_rules        = ["all-all"]
+  egress_cidr_blocks  = [var.environment.network_prefix}"]
 }
 
 
