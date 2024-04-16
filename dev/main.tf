@@ -1,4 +1,5 @@
 module "dev" {
-  source  = "../../Modules/blog"
+  source  = ./module/blog
+
   ...
 }
