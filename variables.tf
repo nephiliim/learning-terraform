@@ -19,8 +19,8 @@ variable "ami_filer" {
 
 
 
-variable "Environment"
-  description = "Development Environment"
+variable "Environment" {
+   description = "Development Environment"
 
   type = object({
     name           = string
