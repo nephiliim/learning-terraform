@@ -22,7 +22,7 @@ module "blog_vpc" {
   cidr = "${var.Environment.network_prefix}var.environment.network_prefix}0.0/16"
 
   azs             = ["us-west-2a", "us-west-2b", "us-west-2c"]
-  public_subnets  = ["${var.environment.network_prefix}.101.0/24", "${var.environment.network_prefix}.102.0/24", "${var.environment.network_prefix}.103.0/24"]
+  public_subnets  = ["${var.Environment.network_prefix}.101.0/24", "${var.Environment.network_prefix}.102.0/24", "${var.Environment.network_prefix}.103.0/24"]
 
 
   
@@ -39,7 +39,7 @@ module "blog_autoscaling" {
   version = "7.4.1"
   # insert the 1 required variable here
 
-  name = "${var.environment.name}-blog"
+  name = "${var.Environment.name}-blog"
   min_size = var.asg_min_size
   max_size = var.asg_max_size
 
@@ -56,25 +56,25 @@ module "blog_autoscaling" {
 module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
 
-  name    = "${var.environment.name}-blog-alb"
+  name    = "${var.Environment.name}-blog-alb"
   vpc_id  = "module.blog_vpc.vpc_id"
   subnets =  module.blog_vpc.public_subnets
 
   # Security Group
   security_group_ingress_rules = {
     all_http = {
-      from_port   = "${var.environment.network_prefix}"
-      to_port     = "${var.environment.network_prefix}"
+      from_port   = "${var.Environment.network_prefix}"
+      to_port     = "${var.Environment.network_prefix}"
       ip_protocol = "tcp"
       description = "HTTP web traffic"
-      cidr_ipv4   = "${var.environment.network_prefix}"
+      cidr_ipv4   = "${var.Environment.network_prefix}"
     }
     all_https = {
       from_port   = 443
       to_port     = 443
       ip_protocol = "tcp"
       description = "HTTPS web traffic"
-      cidr_ipv4   = "${var.environment.network_prefix}"
+      cidr_ipv4   = "${var.Environment.network_prefix}"
     }
   }
   security_group_egress_rules = {
