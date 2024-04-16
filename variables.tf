@@ -14,11 +14,10 @@ variable "ami_filer" {
     default = {
     name = "bitnami-tomcat-*-x86_64-hvm-ebs-nami"
     owner = "979382823631" # Bitnami
+    }
 }
 
-data "aws_vpc" "default" {
-  default = true
-}
+
 
 variable "Environment"
   description = "Development Environment"
