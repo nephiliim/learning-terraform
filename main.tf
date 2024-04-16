@@ -14,7 +14,7 @@ data "aws_ami" "app_ami" {
   owners = [var.ami_filer.owner] # 
 }
 
-data "aws_vpc" "default" {
+ "aws_vpc" "default" {
   default = true
 }
 
