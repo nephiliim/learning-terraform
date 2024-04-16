@@ -11,12 +11,10 @@ data "aws_ami" "app_ami" {
     values = ["hvm"]
   }
 
-  owners = [var.ami_filer.owner] # 
+  owners = [var.ami_filer.owner] 
 }
 
- "aws_vpc" "default" {
-  data default = true
-}
+ 
 
 module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
