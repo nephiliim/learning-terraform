@@ -1,4 +1,4 @@
 module "dev" {
-  source      = "./modules/dev"
+  source  = "../module/dev"
   ...
 }
