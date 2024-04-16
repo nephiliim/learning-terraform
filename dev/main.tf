@@ -1,5 +1,5 @@
 module "dev" {
-  source  = "./modules/blog"
+  source  = "./Modules/blog"
 
   ...
 }
