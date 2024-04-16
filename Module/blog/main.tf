@@ -14,19 +14,18 @@ data "aws_ami" "app_ami" {
   owners = [var.ami_filer.owner] 
 }
 
- 
 
 module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = var.environment.name
-  cidr = "${var.environment.network_prefix}var.environment.network_prefix}/16"
+  cidr = "${var.environment.network_prefix}var.environment.network_prefix}0.0/16"
 
   azs             = ["us-west-2a", "us-west-2b", "us-west-2c"]
-
   public_subnets  = ["{var.environment.network_prefix}].101.0/24",["{var.environment.network_prefix}].102.0/24",["{var.environment.network_prefix}].103.0/24",
 
-enable_nat_gateway = true
+enable_nat_gateway
+  
   tags = {
     Terraform = "true"
     Environment = var.environment.name
@@ -35,7 +34,7 @@ enable_nat_gateway = true
 
 
 
-module "autoscaling" {
+module "blog_autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "7.4.1"
   # insert the 1 required variable here
@@ -45,11 +44,10 @@ module "autoscaling" {
   max_size = var.asg_max_size
 
   vpc_zone_identifier = module.blog_vpc.public_subnets
-  
+  target_group_arns   = module.blog_alb.target_group_arns
   security_groups     = [module.Blog_sg.security_group_id]
-  
-  image_id                 = data.aws_ami.app_ami.id
-  instance_type          = var.instance_type
+  image_id            = data.aws_ami.app_ami.id
+  instance_type       = var.instance_type
 
 
 }
