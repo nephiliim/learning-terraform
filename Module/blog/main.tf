@@ -18,7 +18,7 @@ data "aws_ami" "app_ami" {
 module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = var.environment.name
+  name = var.Environment.name
   cidr = "${var.environment.network_prefix}var.environment.network_prefix}0.0/16"
 
   azs             = ["us-west-2a", "us-west-2b", "us-west-2c"]
@@ -28,7 +28,7 @@ enable_nat_gateway
   
   tags = {
     Terraform = "true"
-    Environment = var.environment.name
+    Environment = var.Environment.name
   }
 }
 
@@ -110,7 +110,7 @@ module "Blog_sg" {
   name = "${var.environment.name}-blog"
  
   vpc_id              = module.blog_vpc.vpc_id
-  ingress_rules       = ["http-var.environment.network_prefix}-tcp","https-443-tcp"]
+  ingress_rules       = ["http-var.Environment.network_prefix}-tcp","https-443-tcp"]
   ingress_cidr_blocks = [var.environment.network_prefix}"]
   egress_rules        = ["all-all"]
   egress_cidr_blocks  = [var.environment.network_prefix}"]
