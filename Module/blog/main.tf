@@ -109,6 +109,7 @@ module "Blog_sg" {
   version = "5.1.2"
   name = "${var.environment.name}-blog"
  
+ 
   vpc_id              = module.blog_vpc.vpc_id
   ingress_rules       = ["http-var.Environment.network_prefix}-tcp","https-443-tcp"]
   ingress_cidr_blocks = [var.environment.network_prefix}"]
